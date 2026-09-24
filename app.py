@@ -1,7 +1,7 @@
 import streamlit as st
 import google.generativeai as genai
 from PIL import Image
-import fitz  # PyMuPDF (runs smoothly in cloud environments without external tools)
+import fitz  # PyMuPDF
 import json
 import time
 
@@ -25,7 +25,6 @@ else:
     uploaded_file = st.file_uploader("Upload MCQ Question Paper (PDF)", type=["pdf"])
 
     if uploaded_file is not None:
-        # Convert PDF pages to PIL images using PyMuPDF
         pdf_bytes = uploaded_file.read()
         doc = fitz.open(stream=pdf_bytes, filetype="pdf")
         
@@ -68,10 +67,13 @@ else:
         """
 
         if st.button("Analyze MCQ Paper"):
+            progress_bar = st.progress(0)
             for page_num in range(len(doc)):
-               if page_num > 0:
+                # Respect rate limits (5 RPM = 1 request per 12 seconds)
+                if page_num > 0:
                     with st.spinner("Pausing 12s to avoid free API rate limits..."):
                         time.sleep(12)
+
                 page = doc[page_num]
                 pix = page.get_pixmap(dpi=150)
                 img = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
@@ -83,9 +85,11 @@ else:
                     st.image(img, caption=f"Page {page_num + 1}", use_container_width=True)
 
                 with col2:
-                    with st.spinner("Classifying questions on this page..."):
+                    with st.spinner(f"Classifying page {page_num + 1}..."):
                         try:
                             response = model.generate_content([prompt, img])
                             st.markdown(response.text)
                         except Exception as e:
                             st.error(f"Error processing page: {e}")
+                
+                progress_bar.progress((page_num + 1) / len(doc))
