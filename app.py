@@ -69,8 +69,9 @@ else:
 
         if st.button("Analyze MCQ Paper"):
             for page_num in range(len(doc)):
-                if page_num > 0:
-            time.sleep(12)
+               if page_num > 0:
+                    with st.spinner("Pausing 12s to avoid free API rate limits..."):
+                        time.sleep(12)
                 page = doc[page_num]
                 pix = page.get_pixmap(dpi=150)
                 img = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
