@@ -20,7 +20,7 @@ if not api_key:
     st.warning("Please enter or configure your Gemini API Key to start.")
 else:
     genai.configure(api_key=api_key)
-    model = genai.GenerativeModel('gemini-3.6-flash')
+    model = genai.GenerativeModel('gemini-3.8-flash')
 
     uploaded_file = st.file_uploader("Upload MCQ Question Paper (PDF)", type=["pdf"])
 
