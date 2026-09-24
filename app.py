@@ -6,7 +6,7 @@ import fitz  # PyMuPDF
 st.set_page_config(page_title="H2 Chem MCQ Topic Identifier", layout="wide")
 
 st.title("🧪 Singapore 9476 H2 Chemistry MCQ Classifier")
-st.write("Upload an MCQ paper (PDF) to automatically tag questions with 9476 syllabus topics.")
+st.write("Upload an MCQ paper (PDF) to automatically tag questions with refined 9476 syllabus topics.")
 
 # Check Streamlit secrets first; if not found, use sidebar input
 if "GEMINI_API_KEY" in st.secrets:
@@ -35,8 +35,11 @@ else:
         2. Chemical Bonding & Structure (VSEPR, intermolecular forces, metallic/ionic/covalent)
         3. The Gaseous State (Ideal gas equation pV=nRT, real gas deviations)
         4. Theories of Acids and Bases (Arrhenius, Brønsted-Lowry, Lewis acids/bases)
-        5. The Periodic Table & Periodicity (Period 3 trends, Group 2, Group 17)
-        6. The Mole Concept & Stoichiometry (Titration calculations, empirical formulas)
+        5a. Periodic Table & Periodicity: Period 3 (Period 3 trends in physical properties, oxides, and chlorides)
+        5b. Group 2 Elements (Trends in thermal stability of carbonates/nitrates, solubility of hydroxides/sulfates)
+        5c. Group 17 Elements (Halogens: volatility, displacement reactions, halide testing, thermal stability of hydrogen halides)
+        6a. Mole Concept & Stoichiometry (Empirical formulas, non-redox titrations, basic calculations)
+        6b. Redox & Volumetric Analysis (Oxidation states, balancing half-equations, redox titrations e.g., manganate/thiosulfate)
         7. Chemical Energetics (Enthalpy ΔH, Entropy ΔS, Gibbs Free Energy ΔG, Born-Haber cycles)
         8. Reaction Kinetics (Rate equations, orders of reaction, activation energy, catalysts)
         9. Chemical Equilibria (Kc, Kp, Le Chatelier's Principle)
@@ -44,31 +47,31 @@ else:
         10b. Solubility Equilibria (Solubility Product Ksp, Ionic Product, Common Ion Effect, Selective precipitation)
         11a. Electrochemistry: Galvanic/Voltaic Cells (Standard electrode potentials E°, Nernst, Feasibility ΔG° = -nFE°)
         11b. Electrochemistry: Electrolysis (Faraday's laws, electrolysis calculations, industrial applications)
-        12. Introduction to Organic Chemistry & Isomerism (Functional groups, Structural isomerism, Stereoisomerism)
-        13. Hydrocarbons (Alkanes, Alkenes, Arenes)
-        14. Halogen Derivatives (Halogenoalkanes SN1/SN2, Halogenoarenes)
-        15. Hydroxy Compounds (Alcohols, Phenols)
-        16. Carbonyl Compounds (Aldehydes, Ketones, Tri-iodomethane, Tollens/Fehling's)
-        17. Carboxylic Acids & Derivatives (Carboxylic acids, Acyl chlorides, Esters)
-        18. Nitrogen Compounds (Amines, Amides, Amino Acids, Zwitterions)
-        19. Polymers (Addition polymerisation, Condensation polymerisation)
-        20. Transition Elements (Complexes, Ligand exchange, Variable oxidation states, Colour)
+        12. Introduction to Organic Chemistry & Isomerism (Structural isomerism, Cis-trans & Optical stereoisomerism)
+        13. Hydrocarbons (Alkanes - free radical substitution, Alkenes - electrophilic addition, Arenes - electrophilic substitution)
+        14. Halogen Derivatives (Halogenoalkanes - SN1/SN2 mechanisms, Halogenoarenes reactivity)
+        15. Hydroxy Compounds (Alcohols - oxidation/esterification/acidity, Phenols - acidity & substitution)
+        16. Carbonyl Compounds (Aldehydes & Ketones - nucleophilic addition, Tri-iodomethane test, Tollens/Fehling's)
+        17. Carboxylic Acids & Derivatives (Carboxylic acids, Acyl chlorides, Esters - hydrolysis & relative reactivity)
+        18. Nitrogen Compounds (Amines - basicity, Amides - neutral character, Amino Acids - zwitterions & isoelectric point)
+        19. Polymers (Addition polymerisation, Condensation polymerisation, Biodegradability)
+        20. Transition Elements (Complex formation, Ligand exchange, Variable oxidation states, Colour of complexes)
+        21. Integrated Organic Chemistry (Multi-step synthesis pathways, multi-functional group deductions, structural deduction from physical/chemical test observations)
         """
 
         prompt = f"""
         You are an expert Singapore GCE A-Level H2 Chemistry (Syllabus 9476) tutor.
         Analyze all pages of this MCQ exam paper. Extract EVERY question across all pages and format as Markdown.
 
-        For each question:
+        For each question provide:
         - **Question Number**
-        - **Primary Topic**: Must be the EXACT matching topic from: {SYLLABUS}
-        - **Secondary Topics**: Any cross-topic tags
-        - **Reasoning**: 1 sentence explaining why this topic was selected.
+        - **Primary Topic**: Must be the EXACT matching topic label from: {SYLLABUS}
+        - **Secondary Topics**: Any secondary syllabus subtopics that apply.
+        - **Reasoning**: 1 concise sentence explaining why this topic was selected.
         """
 
         if st.button("Analyze Entire Paper"):
             with st.spinner("Processing all pages in a single request..."):
-                # Collect images of all pages into one list
                 contents = [prompt]
                 for page_num in range(len(doc)):
                     page = doc[page_num]
