@@ -3,6 +3,7 @@ import google.generativeai as genai
 from PIL import Image
 import fitz  # PyMuPDF (runs smoothly in cloud environments without external tools)
 import json
+import time
 
 st.set_page_config(page_title="H2 Chem MCQ Topic Identifier", layout="wide")
 
@@ -68,6 +69,8 @@ else:
 
         if st.button("Analyze MCQ Paper"):
             for page_num in range(len(doc)):
+                if page_num > 0:
+            time.sleep(12)
                 page = doc[page_num]
                 pix = page.get_pixmap(dpi=150)
                 img = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
